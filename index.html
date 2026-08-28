@@ -1,5 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
 <title>دعوة زفاف حنين وحامد</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +29,13 @@
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box}
+/* iOS يكتشف التواريخ والأوقات ويحوّلها لروابط زرقاء تحتها خط — نلغي ذلك */
+a[x-apple-data-detectors],
+a[x-apple-data-detectors] span{
+  color:inherit!important;text-decoration:none!important;
+  font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;
+  pointer-events:none!important;
+}
 body{margin:0;direction:rtl;background:var(--plum-0);color:var(--cream);
      font-family:var(--ff-ui);-webkit-font-smoothing:antialiased}
 :focus-visible{outline:2px solid var(--mauve);outline-offset:3px;border-radius:4px}
@@ -267,7 +275,7 @@ body.locked{overflow:hidden}
 
   <section class="sec rev">
     <p class="eyebrow">دعوة</p>
-    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس<br><b>سمير حامد الفتياني</b><br>بدعوتكم لحضور حفل زفاف</p>
+    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس <b>سمير الفتياني</b><br>ووالد العروس <b>محمد غريب</b><br>بدعوتكم لحضور حفل زفاف</p>
     <h2 class="bloom" style="font-size:1.85rem;margin:0">حنين &amp; حامد</h2>
     <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
   </section>
@@ -737,70 +745,114 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     }finally{ $('#btnYes').disabled=false; $('#btnNo').disabled=false; }
   });
 
-  /* ================= موسيقى — مقام حجاز ================= */
+  /* ================= موسيقى هادئة رومانسية ================= */
   const btn=$('#musicBtn');
   let actx=null,master=null,timer=null,step=0,nextAt=0;
-  const HIJAZ=[293.66,311.13,369.99,392.00,440.00,466.16,523.25,587.33];
-  const PATTERN=[0,2,4,6,5,3,2,4,1,3,5,4,0,2,3,1];
+
+  /* Cmaj7 → Am7 → Fmaj7 → G  — تتابع رومانسي كلاسيكي */
+  const CHORDS=[
+    {arp:[261.63,329.63,392.00,493.88], pad:[130.81,196.00]},
+    {arp:[220.00,261.63,329.63,392.00], pad:[110.00,164.81]},
+    {arp:[174.61,261.63,329.63,440.00], pad:[ 87.31,130.81]},
+    {arp:[196.00,246.94,293.66,392.00], pad:[ 98.00,146.83]}
+  ];
+  const ARP=[0,1,2,3,2,1,2,3];      /* ٨ نغمات لكل مقطع */
+  const STEP=0.62;                   /* إيقاع بطيء */
+  const PER=ARP.length*STEP;         /* طول المقطع الواحد */
+
   function reverb(sec,decay){
     const rate=actx.sampleRate,len=Math.floor(rate*sec),buf=actx.createBuffer(2,len,rate);
     for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);
       for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);}
     const c=actx.createConvolver(); c.buffer=buf; return c;
   }
-  function pluck(freq,t,dur,gain){
-    const o=actx.createOscillator(),o2=actx.createOscillator(),g=actx.createGain(),g2=actx.createGain();
-    o.type='triangle'; o2.type='sine'; o.frequency.value=freq; o2.frequency.value=freq*2.004;
-    g2.gain.value=.22; o2.connect(g2); g2.connect(g); o.connect(g); g.connect(master);
-    g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(gain,t+.014);
-    g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-    o.start(t); o2.start(t); o.stop(t+dur+.05); o2.stop(t+dur+.05);
+  /* نغمة بيانو ناعمة */
+  function note(freq,t,dur,gain){
+    const g=actx.createGain();
+    const o1=actx.createOscillator(), o2=actx.createOscillator(), o3=actx.createOscillator();
+    const g2=actx.createGain(), g3=actx.createGain();
+    o1.type='sine';     o1.frequency.value=freq;
+    o2.type='sine';     o2.frequency.value=freq*2;      g2.gain.value=0.16;
+    o3.type='triangle'; o3.frequency.value=freq*0.5;    g3.gain.value=0.10;
+    o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
+    const lp=actx.createBiquadFilter(); lp.type='lowpass';
+    lp.frequency.value=2200; lp.Q.value=0.4;
+    g.connect(lp); lp.connect(master);
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.linearRampToValueAtTime(gain,t+0.05);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    [o1,o2,o3].forEach(o=>{o.start(t); o.stop(t+dur+0.05);});
   }
-  function drone(t){
-    const o=actx.createOscillator(),g=actx.createGain();
-    o.type='sine'; o.frequency.value=146.83; o.connect(g); g.connect(master);
-    g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.05,t+1.6);
-    g.gain.exponentialRampToValueAtTime(.0001,t+6.4); o.start(t); o.stop(t+6.5);
+  /* وسادة دافئة تحت اللحن */
+  function padChord(freqs,t,dur){
+    freqs.forEach((f,i)=>{
+      const o=actx.createOscillator(), g=actx.createGain();
+      o.type='triangle'; o.frequency.value=f;
+      o.detune.value=(i?6:-6);
+      const lp=actx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=900;
+      o.connect(g); g.connect(lp); lp.connect(master);
+      g.gain.setValueAtTime(0.0001,t);
+      g.gain.linearRampToValueAtTime(0.055,t+dur*0.35);
+      g.gain.linearRampToValueAtTime(0.045,t+dur*0.7);
+      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.start(t); o.stop(t+dur+0.1);
+    });
   }
   function schedule(){
-    while(nextAt<actx.currentTime+.35){
-      const i=PATTERN[step%PATTERN.length];
-      pluck(HIJAZ[i],nextAt,2.1,.16);
-      if(step%4===0) pluck(HIJAZ[i]/2,nextAt,2.6,.07);
-      if(step%16===0) drone(nextAt);
-      nextAt+=.42; step++;
+    while(nextAt<actx.currentTime+0.6){
+      const bar=Math.floor(step/ARP.length)%CHORDS.length;
+      const idx=step%ARP.length;
+      const ch=CHORDS[bar];
+      if(idx===0) padChord(ch.pad,nextAt,PER*1.06);
+      note(ch.arp[ARP[idx]],nextAt,2.6,idx===0?0.15:0.105);
+      if(idx===4) note(ch.arp[3]*2,nextAt,3.2,0.035);   /* لمعة خفيفة */
+      nextAt+=STEP; step++;
     }
   }
   function startMusic(){
     if(!actx){
       const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return false;
-      actx=new AC(); master=actx.createGain(); master.gain.value=.0001;
-      const rv=reverb(2.6,2.4),wet=actx.createGain(),dry=actx.createGain();
-      wet.gain.value=.5; dry.gain.value=.75;
+      actx=new AC(); master=actx.createGain(); master.gain.value=0.0001;
+      const rv=reverb(3.4,2.0),wet=actx.createGain(),dry=actx.createGain();
+      wet.gain.value=0.62; dry.gain.value=0.7;
       master.connect(dry); dry.connect(actx.destination);
       master.connect(rv); rv.connect(wet); wet.connect(actx.destination);
-      nextAt=actx.currentTime+.1;
+      nextAt=actx.currentTime+0.15;
     }
     actx.resume();
     master.gain.cancelScheduledValues(actx.currentTime);
-    master.gain.setValueAtTime(Math.max(master.gain.value,.0001),actx.currentTime);
-    master.gain.exponentialRampToValueAtTime(.32,actx.currentTime+1.2);
-    if(!timer) timer=setInterval(schedule,90);
+    master.gain.setValueAtTime(Math.max(master.gain.value,0.0001),actx.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.4,actx.currentTime+2.4);  /* دخول متدرّج */
+    if(!timer) timer=setInterval(schedule,120);
     return true;
   }
   function stopMusic(){
     if(!actx) return;
     master.gain.cancelScheduledValues(actx.currentTime);
     master.gain.setValueAtTime(master.gain.value,actx.currentTime);
-    master.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.7);
+    master.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+0.9);
     clearInterval(timer); timer=null;
   }
-  btn.addEventListener('click',()=>{
-    const on=btn.classList.toggle('on');
-    if(on&&!startMusic()){ btn.classList.remove('on'); return; }
-    if(!on) stopMusic();
+  function setBtn(on){
+    btn.classList.toggle('on',on);
     btn.setAttribute('aria-pressed',String(on));
     $('.sr',btn).textContent=on?'إيقاف الموسيقى':'تشغيل الموسيقى';
+  }
+  /* تشغيل تلقائي عند أول تفاعل (المتصفحات تمنع الصوت قبل ذلك) */
+  let armed=false;
+  function arm(){
+    if(armed) return; armed=true;
+    if(startMusic()) setBtn(true);
+  }
+  ['pointerdown','touchstart','keydown','wheel'].forEach(t=>
+    addEventListener(t,arm,{once:true,passive:true}));
+
+  btn.addEventListener('click',()=>{
+    armed=true;
+    const on=!btn.classList.contains('on');
+    if(on&&!startMusic()) return;
+    if(!on) stopMusic();
+    setBtn(on);
   });
 })();
 </script>
