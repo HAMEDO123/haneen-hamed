@@ -275,7 +275,7 @@ body.locked{overflow:hidden}
 
   <section class="sec rev">
     <p class="eyebrow">دعوة</p>
-    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس <b>سمير الفتياني</b><br>ووالد العروس <b>محمد غريب</b><br>بدعوتكم لحضور حفل زفاف</p>
+    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس <b>المهندس سمير الفتياني</b><br>ووالد العروس <b>محمد غريب</b><br>بدعوتكم لحضور حفل زفاف</p>
     <h2 class="bloom" style="font-size:1.85rem;margin:0">حنين &amp; حامد</h2>
     <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
   </section>
@@ -348,6 +348,9 @@ body.locked{overflow:hidden}
   </footer>
 </main>
 
+<audio id="bgm" loop preload="auto" playsinline>
+  <source src="music.m4a" type="audio/mp4">
+</audio>
 <button class="music" id="musicBtn" aria-pressed="false">
   <span class="eq"><i></i><i></i><i></i><i></i></span>
   <span class="sr">تشغيل الموسيقى</span>
@@ -745,100 +748,40 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     }finally{ $('#btnYes').disabled=false; $('#btnNo').disabled=false; }
   });
 
-  /* ================= موسيقى هادئة رومانسية ================= */
-  const btn=$('#musicBtn');
-  let actx=null,master=null,timer=null,step=0,nextAt=0;
+  /* ================= موسيقى الزفاف ================= */
+  /* Pachelbel — Canon in D (تسجيل بترخيص CC0، ملكية عامة) */
+  const btn=$('#musicBtn'), bgm=$('#bgm');
+  const VOL=0.38;
+  let fadeTimer=null;
 
-  /* Cmaj7 → Am7 → Fmaj7 → G  — تتابع رومانسي كلاسيكي */
-  const CHORDS=[
-    {arp:[261.63,329.63,392.00,493.88], pad:[130.81,196.00]},
-    {arp:[220.00,261.63,329.63,392.00], pad:[110.00,164.81]},
-    {arp:[174.61,261.63,329.63,440.00], pad:[ 87.31,130.81]},
-    {arp:[196.00,246.94,293.66,392.00], pad:[ 98.00,146.83]}
-  ];
-  const ARP=[0,1,2,3,2,1,2,3];      /* ٨ نغمات لكل مقطع */
-  const STEP=0.62;                   /* إيقاع بطيء */
-  const PER=ARP.length*STEP;         /* طول المقطع الواحد */
-
-  function reverb(sec,decay){
-    const rate=actx.sampleRate,len=Math.floor(rate*sec),buf=actx.createBuffer(2,len,rate);
-    for(let ch=0;ch<2;ch++){const d=buf.getChannelData(ch);
-      for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);}
-    const c=actx.createConvolver(); c.buffer=buf; return c;
-  }
-  /* نغمة بيانو ناعمة */
-  function note(freq,t,dur,gain){
-    const g=actx.createGain();
-    const o1=actx.createOscillator(), o2=actx.createOscillator(), o3=actx.createOscillator();
-    const g2=actx.createGain(), g3=actx.createGain();
-    o1.type='sine';     o1.frequency.value=freq;
-    o2.type='sine';     o2.frequency.value=freq*2;      g2.gain.value=0.16;
-    o3.type='triangle'; o3.frequency.value=freq*0.5;    g3.gain.value=0.10;
-    o1.connect(g); o2.connect(g2); g2.connect(g); o3.connect(g3); g3.connect(g);
-    const lp=actx.createBiquadFilter(); lp.type='lowpass';
-    lp.frequency.value=2200; lp.Q.value=0.4;
-    g.connect(lp); lp.connect(master);
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.linearRampToValueAtTime(gain,t+0.05);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-    [o1,o2,o3].forEach(o=>{o.start(t); o.stop(t+dur+0.05);});
-  }
-  /* وسادة دافئة تحت اللحن */
-  function padChord(freqs,t,dur){
-    freqs.forEach((f,i)=>{
-      const o=actx.createOscillator(), g=actx.createGain();
-      o.type='triangle'; o.frequency.value=f;
-      o.detune.value=(i?6:-6);
-      const lp=actx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=900;
-      o.connect(g); g.connect(lp); lp.connect(master);
-      g.gain.setValueAtTime(0.0001,t);
-      g.gain.linearRampToValueAtTime(0.055,t+dur*0.35);
-      g.gain.linearRampToValueAtTime(0.045,t+dur*0.7);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
-      o.start(t); o.stop(t+dur+0.1);
-    });
-  }
-  function schedule(){
-    while(nextAt<actx.currentTime+0.6){
-      const bar=Math.floor(step/ARP.length)%CHORDS.length;
-      const idx=step%ARP.length;
-      const ch=CHORDS[bar];
-      if(idx===0) padChord(ch.pad,nextAt,PER*1.06);
-      note(ch.arp[ARP[idx]],nextAt,2.6,idx===0?0.15:0.105);
-      if(idx===4) note(ch.arp[3]*2,nextAt,3.2,0.035);   /* لمعة خفيفة */
-      nextAt+=STEP; step++;
-    }
+  function fadeTo(target,ms,done){
+    clearInterval(fadeTimer);
+    const from=bgm.volume, steps=Math.max(1,Math.round(ms/50));
+    let i=0;
+    fadeTimer=setInterval(()=>{
+      i++;
+      const v=from+(target-from)*(i/steps);
+      bgm.volume=Math.min(1,Math.max(0,v));
+      if(i>=steps){ clearInterval(fadeTimer); fadeTimer=null; if(done) done(); }
+    },50);
   }
   function startMusic(){
-    if(!actx){
-      const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return false;
-      actx=new AC(); master=actx.createGain(); master.gain.value=0.0001;
-      const rv=reverb(3.4,2.0),wet=actx.createGain(),dry=actx.createGain();
-      wet.gain.value=0.62; dry.gain.value=0.7;
-      master.connect(dry); dry.connect(actx.destination);
-      master.connect(rv); rv.connect(wet); wet.connect(actx.destination);
-      nextAt=actx.currentTime+0.15;
-    }
-    actx.resume();
-    master.gain.cancelScheduledValues(actx.currentTime);
-    master.gain.setValueAtTime(Math.max(master.gain.value,0.0001),actx.currentTime);
-    master.gain.exponentialRampToValueAtTime(0.4,actx.currentTime+2.4);  /* دخول متدرّج */
-    if(!timer) timer=setInterval(schedule,120);
+    if(!bgm) return false;
+    bgm.volume=0;
+    const pr=bgm.play();
+    if(pr&&pr.catch) pr.catch(()=>{});
+    fadeTo(VOL,2400);
     return true;
   }
   function stopMusic(){
-    if(!actx) return;
-    master.gain.cancelScheduledValues(actx.currentTime);
-    master.gain.setValueAtTime(master.gain.value,actx.currentTime);
-    master.gain.exponentialRampToValueAtTime(0.0001,actx.currentTime+0.9);
-    clearInterval(timer); timer=null;
+    fadeTo(0,700,()=>bgm.pause());
   }
   function setBtn(on){
     btn.classList.toggle('on',on);
     btn.setAttribute('aria-pressed',String(on));
     $('.sr',btn).textContent=on?'إيقاف الموسيقى':'تشغيل الموسيقى';
   }
-  /* تشغيل تلقائي عند أول تفاعل (المتصفحات تمنع الصوت قبل ذلك) */
+  /* تشغيل تلقائي عند أول تفاعل — المتصفحات تمنع الصوت قبل ذلك */
   let armed=false;
   function arm(){
     if(armed) return; armed=true;
@@ -850,8 +793,7 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   btn.addEventListener('click',()=>{
     armed=true;
     const on=!btn.classList.contains('on');
-    if(on&&!startMusic()) return;
-    if(!on) stopMusic();
+    if(on){ if(!startMusic()) return; } else { stopMusic(); }
     setBtn(on);
   });
 })();
