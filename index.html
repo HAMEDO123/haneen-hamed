@@ -122,10 +122,13 @@ body.locked{overflow:hidden}
 /* الخدش */
 .scratch-row{display:flex;gap:11px;justify-content:center;width:100%}
 .sc{flex:1 1 0;max-width:112px;display:flex;flex-direction:column;align-items:center;gap:9px}
-.sc-well{position:relative;width:100%;aspect-ratio:3/4;border-radius:6px;overflow:hidden;
-         display:grid;place-items:center;background:rgba(69,35,86,.55);
-         box-shadow:inset 0 0 0 1px rgba(169,123,199,.35)}
-.sc-val{font-family:var(--ff-prose);font-weight:700;font-size:clamp(1.2rem,5.6vw,1.6rem);line-height:1.4}
+.sc-well{
+  position:relative;width:100%;aspect-ratio:1/1;border-radius:12px;overflow:hidden;
+  display:grid;place-items:center;
+  background:linear-gradient(165deg, rgba(169,123,199,.16), rgba(233,168,122,.08));
+}
+.sc-val{font-family:var(--ff-prose);font-weight:700;color:var(--orange-hi);
+  font-size:clamp(1.3rem,6vw,1.75rem);line-height:1.4;letter-spacing:.01em}
 .sc-cap{font-size:.72rem;color:var(--cream-3)}
 .linkish{appearance:none;background:none;border:0;cursor:pointer;font-family:var(--ff-ui);
          font-size:.8rem;color:var(--orange);border-bottom:1px solid rgba(233,168,122,.45);padding:2px 0}
@@ -255,16 +258,16 @@ body.locked{overflow:hidden}
   <section class="sec glass rev">
     <p class="eyebrow">موعدنا</p>
     <div class="scratch-row">
-      <div class="sc"><div class="sc-well"><span class="sc-val bloom">٢٠٢٦</span></div><span class="sc-cap">السنة</span></div>
-      <div class="sc"><div class="sc-well"><span class="sc-val bloom">٩</span></div><span class="sc-cap">الشهر</span></div>
-      <div class="sc"><div class="sc-well"><span class="sc-val bloom">٢٤</span></div><span class="sc-cap">اليوم</span></div>
+      <div class="sc"><div class="sc-well"><span class="sc-val">٢٠٢٦</span></div><span class="sc-cap">السنة</span></div>
+      <div class="sc"><div class="sc-well"><span class="sc-val">٩</span></div><span class="sc-cap">الشهر</span></div>
+      <div class="sc"><div class="sc-well"><span class="sc-val">٢٤</span></div><span class="sc-cap">اليوم</span></div>
     </div>
     <p class="meta">يوم <b>الخميس</b> — الساعة السابعة مساءً</p>
   </section>
 
   <section class="sec rev">
     <p class="eyebrow">دعوة</p>
-    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>نتشرّف بدعوتكم لحضور حفل زفاف</p>
+    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس<br><b>سمير حامد الفتياني</b><br>بدعوتكم لحضور حفل زفاف</p>
     <h2 class="bloom" style="font-size:1.85rem;margin:0">حنين &amp; حامد</h2>
     <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
   </section>
@@ -290,8 +293,8 @@ body.locked{overflow:hidden}
           <span><p class="tl-t">دخول العروسين</p><p class="tl-d">الزفّة على الدرج</p></span></li>
       <li><span class="tl-time">9:30 م</span><span class="tl-dot"><i></i></span>
           <span><p class="tl-t">العشاء</p><p class="tl-d">بوفيه مفتوح</p></span></li>
-      <li><span class="tl-time">11:00 م</span><span class="tl-dot"><i></i></span>
-          <span><p class="tl-t">ختام السهرة</p><p class="tl-d">السهرة مستمرة حتى الحادية عشرة</p></span></li>
+      <li><span class="tl-time">12:00 ص</span><span class="tl-dot"><i></i></span>
+          <span><p class="tl-t">ختام السهرة</p><p class="tl-d">السهرة مستمرة حتى منتصف الليل</p></span></li>
     </ul>
   </section>
 
@@ -350,9 +353,10 @@ body.locked{overflow:hidden}
 .spot{
   position:absolute;translate:-50% -50%;pointer-events:auto;
   width:34px;height:34px;border:0;padding:0;cursor:pointer;border-radius:50%;
-  background:transparent;opacity:0;transition:opacity .5s ease,transform .2s ease;
+  background:transparent;opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .5s ease,transform .2s ease;
 }
-.spot.show{opacity:1}
+.spot.show{opacity:1;visibility:visible;pointer-events:auto}
 .spot:active{transform:translate(-50%,-50%) scale(.9)}
 .spot::before,.spot::after{content:"";position:absolute;border-radius:50%}
 .spot::before{
@@ -415,7 +419,7 @@ body.locked{overflow:hidden}
    ===================================================================== */
 const CONFIG = {
   dateISO  : '2026-09-24T19:00:00+03:00',
-  endISO   : '2026-09-24T23:00:00+03:00',
+  endISO   : '2026-09-25T00:00:00+03:00',
   title    : 'حفل زفاف حنين وحامد',
   venue    : 'EXIT VENUE — Amman, Jordan',
   mapsUrl  : 'https://share.google/mm1LsMKoN0qsQOAKk',
