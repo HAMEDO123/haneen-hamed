@@ -220,7 +220,7 @@ body.locked{overflow:hidden}
     <h2 class="bloom">تفضّلوا بالدخول</h2>
   </div>
   <div class="cap" data-in="0.30" data-out="0.52">
-    <p class="kicker">الخميس ٢٤ · ٩ · ٢٠٢٦</p>
+    <p class="kicker">الخميس ٢٤/٩/٢٠٢٦</p>
     <h2 class="bloom">حنين &amp; حامد</h2>
     <p class="lat">Haneen &amp; Hamed</p>
   </div>
@@ -266,7 +266,7 @@ body.locked{overflow:hidden}
     <p class="eyebrow">دعوة</p>
     <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>نتشرّف بدعوتكم لحضور حفل زفاف</p>
     <h2 class="bloom" style="font-size:1.85rem;margin:0">حنين &amp; حامد</h2>
-    <p class="meta">مساء <b>الخميس ٢٤ · ٩ · ٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
+    <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
   </section>
 
   <section class="sec rev">
@@ -321,8 +321,8 @@ body.locked{overflow:hidden}
       <span id="thanksMsg">شكراً لك</span>
       <button class="linkish" id="againBtn">تسجيل ردٍّ آخر</button>
     </div>
-    <p class="note err hide" id="rsvpErr"></p>
-    <div class="btn-row hide" id="waWrap"><a class="btn" id="waBtn" href="#" target="_blank" rel="noopener">ابعت ردّك على واتساب</a></div>
+    <p class="note hide" id="rsvpErr"></p>
+    <div class="btn-row hide" id="waWrap"><a class="btn" id="waBtn" href="#" target="_blank" rel="noopener">ابعت التأكيد على واتساب</a></div>
     <p class="tally hide" id="tally"></p>
     <div class="guests" id="guestList"></div>
   </section>
@@ -333,7 +333,7 @@ body.locked{overflow:hidden}
       <path d="M75 2 Q82 9 75 16 Q68 9 75 2Z" fill="url(#og)"/>
     </svg>
     <h2 class="bloom" style="font-size:1.4rem;margin:0">حنين &amp; حامد</h2>
-    <p class="foot-t">٢٤ · ٠٩ · ٢٠٢٦</p>
+    <p class="foot-t">٢٤/٩/٢٠٢٦</p>
   </footer>
 </main>
 
@@ -727,8 +727,8 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
       guests=guests.concat([entry]); renderGuests();
       closeForm('شكراً يا '+entry.name+' 🤍');
       $('#rsvpErr').classList.remove('hide');
-      $('#rsvpErr').textContent='تعذّر حفظ الردّ على الصفحة. ابعته مباشرة:';
-      const txt=entry.name+' — '+(going?'رح أحضر ('+entry.count+')':'أعتذر عن الحضور');
+      $('#rsvpErr').textContent='ضلّت خطوة وحدة — ابعت تأكيدك للعروسين:';
+      const txt='تأكيد حضور — زفاف حنين وحامد\n\nالاسم: '+entry.name+'\n'+(going?'رح أحضر بإذن الله\nعدد الأشخاص: '+entry.count:'أعتذر عن الحضور');
       $('#waBtn').href='https://wa.me/'+(CONFIG.whatsapp||'')+'?text='+encodeURIComponent(txt);
       $('#waWrap').classList.remove('hide');
     }finally{ $('#btnYes').disabled=false; $('#btnNo').disabled=false; }
