@@ -193,6 +193,7 @@ body.locked{overflow:hidden}
 .field input:focus,.field select:focus{outline:none;border-bottom-color:var(--orange)}
 .note{margin:0;font-size:.84rem;color:var(--cream-2);line-height:1.95;max-width:32ch}
 .note.err{color:#F0A79A}
+.note.busy{color:var(--orange-hi)}
 .guests{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:340px}
 .chip{font-size:.8rem;padding:5px 12px;border-radius:999px;color:var(--mauve-hi);
       background:rgba(169,123,199,.16);box-shadow:inset 0 0 0 1px rgba(224,200,238,.3)}
@@ -340,7 +341,6 @@ body.locked{overflow:hidden}
       <button class="linkish" id="againBtn">تسجيل ردٍّ آخر</button>
     </div>
     <p class="note hide" id="rsvpErr"></p>
-    <div class="btn-row hide" id="waWrap"><a class="btn" id="waBtn" href="#" target="_blank" rel="noopener">ابعت التأكيد على واتساب</a></div>
     <p class="tally hide" id="tally"></p>
     <div class="guests" id="guestList"></div>
   </section>
@@ -444,7 +444,7 @@ const CONFIG = {
   title    : 'حفل زفاف حنين وحامد',
   venue    : 'EXIT VENUE — Amman, Jordan',
   mapsUrl  : 'https://share.google/mm1LsMKoN0qsQOAKk',
-  whatsapp : '962795932666'
+  rsvpUrl  : 'https://script.google.com/macros/s/AKfycbzO21acTKgd-UJ3DoMKWTS6WBIDDpRuhiRMbY_ddC1wZrBgAeFsvsY7GVIpgYxFfLCFyg/exec'
 };
 
 /* أبعاد صورة القاعة */
@@ -693,69 +693,109 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   if(CONFIG.mapsUrl){ $('#mapBtn').href=CONFIG.mapsUrl; }
 
   /* ================= تأكيد الحضور ================= */
-  const DATA_RE=/(<script type="application\/json" id="rsvp-data">)[\s\S]*?(<\/script>)/;
-  let guests=[]; try{ guests=JSON.parse($('#rsvp-data').textContent)||[]; }catch(e){ guests=[]; }
-  function renderGuests(){
-    const list=$('#guestList'), tally=$('#tally');
-    const going=guests.filter(g=>g.going);
-    list.innerHTML='';
-    if(!going.length){ tally.classList.add('hide'); return; }
-    const heads=going.reduce((n,g)=>n+(Number(g.count)||1),0);
-    tally.classList.remove('hide');
-    tally.innerHTML='رح يشاركنا الفرح <b>'+heads+'</b> ضيف حتى الآن';
-    going.slice(-40).forEach(g=>{
-      const el=document.createElement('span'); el.className='chip';
+  const listEl=$('#guestList'), tallyEl=$('#tally'), errEl=$('#rsvpErr');
+
+  function renderGuests(total,guests){
+    listEl.innerHTML='';
+    if(!total){ tallyEl.classList.add('hide'); return; }
+    tallyEl.classList.remove('hide');
+    tallyEl.innerHTML='رح يشاركنا الفرح <b>'+total+'</b> ضيف حتى الآن';
+    (guests||[]).slice(-40).forEach(g=>{
+      const el=document.createElement('span');
+      el.className='chip';
       el.textContent=g.name+(Number(g.count)>1?' +'+(Number(g.count)-1):'');
-      list.appendChild(el);
+      listEl.appendChild(el);
     });
   }
-  renderGuests();
+
+  /* القراءة عبر JSONP لتجاوز قيود CORS في Apps Script */
+  let jsonpN=0;
+  const wait=ms=>new Promise(r=>setTimeout(r,ms));
+  function fetchGuests(){
+    return new Promise(resolve=>{
+      if(!CONFIG.rsvpUrl) return resolve(null);
+      const cb='__rsvp'+(++jsonpN);
+      const sc=document.createElement('script');
+      const t=setTimeout(()=>{done(null);},12000);
+      function done(d){ clearTimeout(t); delete window[cb];
+        if(sc.parentNode) sc.parentNode.removeChild(sc); resolve(d); }
+      window[cb]=d=>done(d);
+      sc.onerror=()=>done(null);
+      sc.src=CONFIG.rsvpUrl+(CONFIG.rsvpUrl.indexOf('?')<0?'?':'&')+'callback='+cb+'&t='+Date.now();
+      document.body.appendChild(sc);
+    });
+  }
+  async function loadGuests(){
+    const d=await fetchGuests();
+    if(d&&d.ok) renderGuests(d.total,d.guests);
+    return d;
+  }
+  loadGuests();
+
   function closeForm(msg){
     $('#rsvpForm').classList.add('hide');
     $('#thanks').classList.remove('hide');
     $('#thanksMsg').textContent=msg;
   }
-  const pending=sessionStorage.getItem('rsvp-thanks');
-  if(pending){
-    try{ const p=JSON.parse(pending);
-      closeForm(p.going?'سجّلنا حضورك يا '+p.name+' — بانتظارك 🤍':'وصلنا اعتذارك يا '+p.name+' — رح نفتقدك');
-    }catch(e){}
-    sessionStorage.removeItem('rsvp-thanks');
+  function say(text,isErr){
+    errEl.classList.remove('hide');
+    errEl.classList.toggle('err',!!isErr);
+    errEl.classList.toggle('busy',!isErr);
+    errEl.textContent=text;
   }
+  function quiet(){ errEl.classList.add('hide'); }
+  function busy(on){
+    $('#btnYes').disabled=on; $('#btnNo').disabled=on;
+    $('#gName').disabled=on; $('#gCount').disabled=on;
+  }
+
   $('#againBtn').addEventListener('click',()=>{
-    $('#thanks').classList.add('hide'); $('#rsvpForm').classList.remove('hide');
-    $('#rsvpErr').classList.add('hide'); $('#waWrap').classList.add('hide');
-    $('#gName').value=''; $('#gName').focus();
+    $('#thanks').classList.add('hide');
+    $('#rsvpForm').classList.remove('hide');
+    quiet(); $('#gName').value=''; $('#gName').focus();
   });
+
   let choice='yes';
   $('#btnYes').addEventListener('click',()=>{choice='yes';});
   $('#btnNo').addEventListener('click',()=>{choice='no';});
+
   $('#rsvpForm').addEventListener('submit',async e=>{
     e.preventDefault();
-    const name=$('#gName').value.trim(); if(!name){$('#gName').focus();return;}
+    const name=$('#gName').value.trim();
+    if(!name){ $('#gName').focus(); return; }
     const going=choice==='yes';
-    const entry={name:name.slice(0,40),count:going?Math.min(2,Number($('#gCount').value)||1):0,going,at:Date.now()};
-    $('#btnYes').disabled=true; $('#btnNo').disabled=true;
-    $('#rsvpErr').classList.add('hide'); $('#waWrap').classList.add('hide');
+    const entry={name:name.slice(0,60),count:going?Math.min(2,Number($('#gCount').value)||1):0,going};
+
+    if(!CONFIG.rsvpUrl){ say('تسجيل الحضور لسا ما انفعّل.',true); return; }
+
+    busy(true); say('جاري التسجيل…',false);
     try{
-      const api=(window.claude&&window.claude.use)?await window.claude.use('artifact'):null;
-      if(!api) throw new Error('unavailable');
-      const src=await fetch(location.href,{cache:'no-store'}).then(r=>r.text());
-      if(!DATA_RE.test(src)) throw new Error('marker');
-      const json=JSON.stringify(guests.concat([entry]).slice(-300)).replace(/</g,'\\u003c');
-      sessionStorage.setItem('rsvp-thanks',JSON.stringify({name:entry.name,going}));
-      await api.publish(src.replace(DATA_RE,(m,a,b)=>a+json+b));
-      closeForm(going?'سجّلنا حضورك يا '+entry.name+' — بانتظارك 🤍':'وصلنا اعتذارك يا '+entry.name);
+      const post=fetch(CONFIG.rsvpUrl,{
+        method:'POST', mode:'no-cors', redirect:'follow',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body:JSON.stringify(entry)
+      }).catch(()=>{});
+      await Promise.race([post,wait(9000)]);
+
+      /* تأكيد فعلي: نقرأ الجدول ونتأكد أن الاسم وصل */
+      let ok=!going;
+      for(let i=0;i<4&&!ok;i++){
+        await wait(i?1800:700);
+        const d=await loadGuests();
+        if(d&&d.ok&&d.guests) ok=d.guests.some(g=>String(g.name).trim()===entry.name);
+      }
+      busy(false);
+      if(ok){
+        quiet();
+        closeForm(going ? 'سجّلنا حضورك يا '+entry.name+' — بانتظارك 🤍'
+                        : 'وصلنا اعتذارك يا '+entry.name+' — رح نفتقدك');
+      } else {
+        say('ما وصل التسجيل. تأكد من الإنترنت وجرّب كمان مرة.',true);
+      }
     }catch(err){
-      sessionStorage.removeItem('rsvp-thanks');
-      if(err&&err.code==='conflict') return;
-      closeForm('شكراً يا '+entry.name+' 🤍');
-      $('#rsvpErr').classList.remove('hide');
-      $('#rsvpErr').textContent='ضلّت خطوة وحدة — ابعت تأكيدك للعروسين:';
-      const txt='تأكيد حضور — زفاف حنين وحامد\n\nالاسم: '+entry.name+'\n'+(going?'رح أحضر بإذن الله\nعدد الأشخاص: '+entry.count:'أعتذر عن الحضور');
-      $('#waBtn').href='https://wa.me/'+(CONFIG.whatsapp||'')+'?text='+encodeURIComponent(txt);
-      $('#waWrap').classList.remove('hide');
-    }finally{ $('#btnYes').disabled=false; $('#btnNo').disabled=false; }
+      busy(false);
+      say('صار خطأ. جرّب كمان مرة.',true);
+    }
   });
 
   /* ================= أغنية الحفل — مشغّل يوتيوب ================= */
