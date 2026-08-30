@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-<title>دعوة زفاف حنين وحامد</title>
+<title>دعوة زفاف حامد وحنين</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Tajawal:wght@300;400;500;700&display=swap">
@@ -36,7 +36,7 @@ a[x-apple-data-detectors] span{
   font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;
   pointer-events:none!important;
 }
-body{margin:0;direction:rtl;background:var(--plum-0);color:var(--cream);
+body{margin:0;direction:rtl;overscroll-behavior:none;background:var(--plum-0);color:var(--cream);
      font-family:var(--ff-ui);-webkit-font-smoothing:antialiased}
 :focus-visible{outline:2px solid var(--mauve);outline-offset:3px;border-radius:4px}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
@@ -250,8 +250,8 @@ body.locked{overflow:hidden}
   </div>
   <div class="cap" data-in="0.26" data-out="0.50">
     <p class="kicker">الخميس ٢٤/٩/٢٠٢٦</p>
-    <h2 class="bloom">حنين &amp; حامد</h2>
-    <p class="lat">Haneen &amp; Hamed</p>
+    <h2 class="bloom">حامد&#160;&#160;&#160;حنين</h2>
+    <p class="lat">Hamed&#160;&#160;&#160;Haneen</p>
   </div>
   <div class="cap" data-in="0.52" data-out="0.74">
     <p class="kicker">يتشرّفان بدعوتكم</p>
@@ -268,7 +268,7 @@ body.locked{overflow:hidden}
   <div class="intro-in">
     <p class="eyebrow">دعوة</p>
     <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس <b>المهندس سمير الفتياني</b><br>ووالد العروس <b>محمد غريب</b><br>بدعوتكم لحضور حفل زفاف</p>
-    <h1 class="bloom intro-names">حنين &amp; حامد</h1>
+    <h1 class="bloom intro-names">حامد&#160;&#160;&#160;حنين</h1>
     <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
     <svg class="orn" viewBox="0 0 150 18" aria-hidden="true">
       <path d="M4 9 H58 M92 9 H146" stroke="rgba(224,200,238,.4)" stroke-width="1"/>
@@ -279,7 +279,7 @@ body.locked{overflow:hidden}
 </section>
 
 <div class="track" id="track"></div>
-<div class="hint" id="hint"><span>مرّر أو اضغط الزر</span><i></i></div>
+<div class="hint" id="hint"><span>اضغط لتبدأ الدعوة</span><i></i></div>
 
 <main class="sheet">
   <section class="sec rev">
@@ -341,7 +341,7 @@ body.locked{overflow:hidden}
       <path d="M4 9 H58 M92 9 H146" stroke="rgba(224,200,238,.4)" stroke-width="1"/>
       <path d="M75 2 Q82 9 75 16 Q68 9 75 2Z" fill="url(#og)"/>
     </svg>
-    <h2 class="bloom" style="font-size:1.4rem;margin:0">حنين &amp; حامد</h2>
+    <h2 class="bloom" style="font-size:1.4rem;margin:0">حامد&#160;&#160;&#160;حنين</h2>
     <p class="foot-t">٢٤/٩/٢٠٢٦</p>
   </footer>
 </main>
@@ -369,7 +369,7 @@ body.locked{overflow:hidden}
 const CONFIG = {
   dateISO  : '2026-09-24T19:00:00+03:00',
   endISO   : '2026-09-25T00:00:00+03:00',
-  title    : 'حفل زفاف حنين وحامد',
+  title    : 'حفل زفاف حامد وحنين',
   venue    : 'EXIT VENUE — Amman, Jordan',
   mapsUrl  : 'https://share.google/mm1LsMKoN0qsQOAKk'};
 
@@ -601,14 +601,12 @@ const CAM_SCREENS = 4.6;   /* طول مسار الكاميرا بالشاشات 
   }
   function autoPause(){ auto.on=false; setAutoBtn(false); }
 
-  /* لمسة المستخدم توقف التمرير مؤقتاً وترجّعه بعد ٥ ثوانٍ */
-  function nudge(){
-    if(auto.stopped) return;
-    if(auto.on) autoPause();
-    clearTimeout(idleT);
-    idleT=setTimeout(autoStart,5000);
-  }
-  ['wheel','touchmove','keydown'].forEach(t=>addEventListener(t,nudge,{passive:true}));
+  /* العرض للمشاهدة فقط — التمرير اليدوي معطّل */
+  const SCROLL_KEYS=[32,33,34,35,36,38,40];
+  const block=e=>{ e.preventDefault(); };
+  addEventListener('wheel',block,{passive:false});
+  addEventListener('touchmove',block,{passive:false});
+  addEventListener('keydown',e=>{ if(SCROLL_KEYS.indexOf(e.keyCode)>-1) e.preventDefault(); },{passive:false});
   autoBtn.addEventListener('click',()=>{
     clearTimeout(idleT);
     if(auto.on) autoPause(); else { auto.stopped=false; autoStart(); }
