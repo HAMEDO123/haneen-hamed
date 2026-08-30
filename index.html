@@ -73,36 +73,47 @@ body.locked{overflow:hidden}
 /* ================= التعليقات فوق المشهد ================= */
 .captions{position:fixed;inset:0;z-index:3;pointer-events:none;display:grid;place-items:center}
 .cap::before{
-  content:"";position:absolute;inset:-40px -30px;z-index:-1;border-radius:50%;
-  background:radial-gradient(60% 55% at 50% 50%, rgba(21,10,28,.72) 0%, rgba(21,10,28,.42) 45%, rgba(21,10,28,0) 78%);
-  filter:blur(6px);
+  content:"";position:absolute;inset:-64px -44px;z-index:-1;border-radius:50%;
+  background:radial-gradient(62% 58% at 50% 50%, rgba(14,6,20,.9) 0%, rgba(14,6,20,.72) 42%, rgba(14,6,20,.3) 68%, rgba(14,6,20,0) 84%);
+  filter:blur(10px);
 }
 .cap{position:absolute;width:min(420px,86vw);text-align:center;isolation:isolate;
      display:flex;flex-direction:column;align-items:center;gap:13px;
      opacity:0;will-change:opacity,transform}
-.kicker{margin:0;font-size:.72rem;letter-spacing:.26em;color:var(--orange-hi);word-spacing:.1em;
-        text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.kicker{margin:0;font-size:1rem;font-weight:700;color:#FFF3E2;word-spacing:.12em;
+  text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 20px rgba(0,0,0,.9),0 0 40px rgba(0,0,0,.7)}
 .bloom{
   margin:0;font-family:var(--ff-disp);line-height:1.65;
   font-size:clamp(1.9rem,9vw,2.7rem);
   background:linear-gradient(140deg,#FBEBDA 0%,var(--orange-hi) 26%,var(--mauve-hi) 58%,var(--mauve) 88%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
-  padding-bottom:.16em;filter:drop-shadow(0 3px 16px rgba(0,0,0,.75));
+  padding-bottom:.16em;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.95)) drop-shadow(0 0 22px rgba(0,0,0,.85));
 }
-.cap p.sub{margin:0;font-family:var(--ff-prose);font-size:1.06rem;line-height:2;
-           color:var(--cream);text-shadow:0 2px 14px rgba(0,0,0,.85)}
-.cap p.lat{margin:0;font-family:var(--ff-lat);font-style:italic;font-size:1rem;
-           letter-spacing:.22em;color:var(--orange-hi);direction:ltr;
-           text-shadow:0 2px 12px rgba(0,0,0,.8)}
+.cap p.sub{margin:0;font-family:var(--ff-prose);font-size:1.3rem;font-weight:700;line-height:2;
+  color:#FFFCF7;
+  text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 20px rgba(0,0,0,.9),0 0 40px rgba(0,0,0,.7)}
+.cap p.lat{margin:0;font-family:var(--ff-lat);font-style:italic;font-weight:400;font-size:1.2rem;
+  letter-spacing:.2em;color:#FFE9CB;direction:ltr;
+  text-shadow:0 2px 6px rgba(0,0,0,.95),0 0 20px rgba(0,0,0,.9)}
 
 .intro{
   position:relative;z-index:4;min-height:100svh;
   display:flex;align-items:center;justify-content:center;padding:56px 26px;
   background:linear-gradient(to bottom,
-    rgba(21,10,28,.9) 0%, rgba(21,10,28,.86) 55%, rgba(21,10,28,.72) 82%, rgba(21,10,28,.35) 100%);
+    rgba(21,10,28,.93) 0%, rgba(21,10,28,.9) 58%, rgba(21,10,28,.78) 84%, rgba(21,10,28,.45) 100%);
 }
 .intro-in{
   width:var(--col);display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;
+}
+.startbtn{
+  margin-top:6px;font-size:.95rem;padding:14px 34px;
+  animation:pulseGlow 2.6s ease-in-out infinite;
+}
+.startbtn.gone{display:none}
+@keyframes pulseGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(250,217,188,.35)}
+  50%{box-shadow:0 0 0 14px rgba(250,217,188,0)}
 }
 .intro-names{margin:0;font-family:var(--ff-disp);font-size:clamp(2rem,10vw,2.7rem);line-height:1.6}
 .track{position:relative;z-index:1}
@@ -233,11 +244,11 @@ body.locked{overflow:hidden}
 <div class="prog" id="prog"></div>
 
 <div class="captions" id="caps" aria-hidden="true">
-  <div class="cap" data-in="0.10" data-out="0.30">
+  <div class="cap" data-in="0.04" data-out="0.24">
     <p class="kicker">أهلاً بكم</p>
     <h2 class="bloom">تفضّلوا بالدخول</h2>
   </div>
-  <div class="cap" data-in="0.30" data-out="0.52">
+  <div class="cap" data-in="0.26" data-out="0.50">
     <p class="kicker">الخميس ٢٤/٩/٢٠٢٦</p>
     <h2 class="bloom">حنين &amp; حامد</h2>
     <p class="lat">Haneen &amp; Hamed</p>
@@ -263,11 +274,12 @@ body.locked{overflow:hidden}
       <path d="M4 9 H58 M92 9 H146" stroke="rgba(224,200,238,.4)" stroke-width="1"/>
       <path d="M75 2 Q82 9 75 16 Q68 9 75 2Z" fill="url(#og)"/>
     </svg>
+    <button class="btn btn-solid startbtn" id="startBtn" type="button">افتح الدعوة</button>
   </div>
 </section>
 
 <div class="track" id="track"></div>
-<div class="hint" id="hint"><span>اضغط ليبدأ العرض</span><i></i></div>
+<div class="hint" id="hint"><span>مرّر أو اضغط الزر</span><i></i></div>
 
 <main class="sheet">
   <section class="sec rev">
@@ -380,21 +392,25 @@ const LIGHTS = [
 
 /* مفاتيح الكاميرا على طول التمرير */
 const CAM_KEYS = [
-  { p:0.00, fx:.63, fy:.56, s:2.30, blur:4.5, bright:.62, sat:.95 },
-  { p:0.16, fx:.62, fy:.55, s:1.90, blur:1.8, bright:.82, sat:1.02 },
-  { p:0.32, fx:.56, fy:.52, s:1.35, blur:0.3, bright:.98, sat:1.06 },
-  { p:0.46, fx:.50, fy:.50, s:1.00, blur:0.0, bright:1.08, sat:1.10 },
-  { p:0.62, fx:.29, fy:.27, s:1.60, blur:0.0, bright:1.06, sat:1.10 },
-  { p:0.80, fx:.34, fy:.70, s:1.50, blur:0.0, bright:1.04, sat:1.08 },
+  { p:0.00, fx:.60, fy:.54, s:1.55, blur:2.0, bright:.86, sat:1.00 },
+  { p:0.10, fx:.57, fy:.52, s:1.28, blur:0.0, bright:1.02, sat:1.06 },
+  { p:0.26, fx:.50, fy:.50, s:1.00, blur:0.0, bright:1.08, sat:1.10 },
+  { p:0.52, fx:.29, fy:.27, s:1.60, blur:0.0, bright:1.06, sat:1.10 },
+  { p:0.76, fx:.34, fy:.70, s:1.50, blur:0.0, bright:1.04, sat:1.08 },
   { p:1.00, fx:.50, fy:.50, s:1.18, blur:7.0, bright:.70, sat:1.02 }
 ];
-const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات */
+const CAM_SCREENS = 4.6;   /* طول مسار الكاميرا بالشاشات */
 
 (function(){
   'use strict';
   const $  = (s,r)=>(r||document).querySelector(s);
   const $$ = (s,r)=>Array.from((r||document).querySelectorAll(s));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* الدعوة تبدأ دائماً من أولها — لا استرجاع لمكان التمرير السابق */
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
+  window.scrollTo(0,0);
+  addEventListener('load',()=>window.scrollTo(0,0));
   const clamp=(v,a,b)=>v<a?a:v>b?b:v;
   const lerp=(a,b,t)=>a+(b-a)*t;
   const ease=(t)=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
@@ -426,7 +442,7 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
 
   /* ---------- حالة الكاميرا ---------- */
   let camP=0, camPT=0;                       /* تقدّم التمرير: حالي/هدف */
-  let cam={fx:.63,fy:.56,s:2.30,blur:4.5,bright:.62,sat:.95};
+  let cam={fx:.60,fy:.54,s:1.55,blur:2.0,bright:.86,sat:1.00};
   let goal={...cam};
 
   function keyAt(p){
@@ -629,9 +645,27 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     $('.sr',btn).textContent=on?'إيقاف الموسيقى':'تشغيل الموسيقى';
   }
   let armed=false;
-  function arm(){ if(armed) return; armed=true; if(startMusic()) setBtn(true); setTimeout(autoStart,900); }
+  function arm(delay){
+    if(armed) return; armed=true;
+    if(startMusic()) setBtn(true);
+    const sb=document.getElementById('startBtn'); if(sb) sb.classList.add('gone');
+    const d=(typeof delay==='number')?delay:900;
+    setTimeout(autoStart,d);
+  }
   ['pointerdown','touchstart','keydown','wheel'].forEach(t=>
     addEventListener(t,arm,{once:true,passive:true}));
+
+  /* محاولة تشغيل فورية — تنجح فقط إذا سمح المتصفح */
+  (function tryDirect(){
+    if(!bgm) return;
+    bgm.volume=0;
+    const pr=bgm.play();
+    if(pr&&pr.then) pr.then(()=>{ arm(4500); }).catch(()=>{});
+  })();
+
+  /* زر «افتح الدعوة» — يشغّل كل شيء بلمسة واحدة */
+  const startBtn=$('#startBtn');
+  if(startBtn) startBtn.addEventListener('click',()=>{ arm(700); });
 
   btn.addEventListener('click',()=>{
     armed=true;
