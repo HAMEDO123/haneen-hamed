@@ -429,7 +429,7 @@ body.locked{overflow:hidden}
   <span class="sr">إيقاف التمرير التلقائي</span>
 </button>
 <audio id="bgm" loop preload="auto" playsinline>
-  <source src="music.m4a" type="audio/mp4">
+  <source src="music-v2.m4a" type="audio/mp4">
 </audio>
 <button class="music" id="musicBtn" aria-pressed="false">
   <span class="eq"><i></i><i></i><i></i><i></i></span>
@@ -648,6 +648,7 @@ const CAM_SCREENS = 3.2;   /* طول مسار الكاميرا بالشاشات 
   /* ================= تمرير تلقائي ================= */
   const autoBtn=$('#autoBtn');
   const auto={on:false,raf:0,last:0,stopped:false};
+  let scrollLocked=true;
   let idleT=null;
 
   function parkY(){
@@ -670,14 +671,15 @@ const CAM_SCREENS = 3.2;   /* طول مسار الكاميرا بالشاشات 
     if(y<camEnd){
       const cp=clamp((y-camTop)/camLen,0,1);
       const ramp=clamp((cp-0.84)/0.12,0,1);
-      speed=lerp(148,340,ramp);
+      speed=lerp(131,300,ramp);
     } else {
-      speed=92;
+      speed=81;
     }
     const limit=Math.min(document.documentElement.scrollHeight-innerHeight, parkY());
     const ny=Math.min(y+speed*dt/1000, limit);
     if(ny<=y+0.05){
       auto.on=false; auto.stopped=true; autoBtn.classList.add('gone');
+      scrollLocked=false;                 /* انتهى العرض — التمرير اليدوي مسموح */
       try{ endMusic(); }catch(e){}
       return;
     }
@@ -692,7 +694,7 @@ const CAM_SCREENS = 3.2;   /* طول مسار الكاميرا بالشاشات 
 
   /* العرض للمشاهدة فقط — التمرير اليدوي معطّل */
   const SCROLL_KEYS=[32,33,34,35,36,38,40];
-  const block=e=>{ e.preventDefault(); };
+  const block=e=>{ if(scrollLocked) e.preventDefault(); };
   addEventListener('wheel',block,{passive:false});
   addEventListener('touchmove',block,{passive:false});
   addEventListener('keydown',e=>{ if(SCROLL_KEYS.indexOf(e.keyCode)>-1) e.preventDefault(); },{passive:false});
