@@ -593,7 +593,6 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     idleT=setTimeout(autoStart,5000);
   }
   ['wheel','touchmove','keydown'].forEach(t=>addEventListener(t,nudge,{passive:true}));
-  /* عند الوصول لتأكيد الحضور نتوقف نهائياً */
   autoBtn.addEventListener('click',()=>{
     clearTimeout(idleT);
     if(auto.on) autoPause(); else { auto.stopped=false; autoStart(); }
