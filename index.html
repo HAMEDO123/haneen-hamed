@@ -115,6 +115,27 @@ body.locked{overflow:hidden}
   0%,100%{box-shadow:0 0 0 0 rgba(250,217,188,.35)}
   50%{box-shadow:0 0 0 14px rgba(250,217,188,0)}
 }
+.honor{font-size:1.16rem;font-weight:700;color:#FFFBF5}
+.parents{
+  display:flex;justify-content:center;align-items:stretch;gap:16px;width:100%;
+  margin:2px 0 4px;
+}
+.parent{
+  flex:1 1 0;max-width:190px;display:flex;flex-direction:column;align-items:center;gap:7px;
+  text-align:center;
+}
+.role{
+  font-family:var(--ff-prose);font-size:.95rem;color:var(--cream-2);line-height:1.6;
+  text-shadow:0 1px 7px rgba(0,0,0,.8),0 0 22px rgba(0,0,0,.5);
+}
+.pname{
+  font-family:var(--ff-prose);font-size:1.3rem;font-weight:700;color:#FFFBF5;line-height:1.7;
+  text-shadow:0 1px 7px rgba(0,0,0,.9),0 0 22px rgba(0,0,0,.6);
+}
+.parents-sep{
+  width:1px;align-self:stretch;flex:0 0 1px;
+  background:linear-gradient(rgba(224,200,238,0),rgba(224,200,238,.38),rgba(224,200,238,0));
+}
 .intro-names{margin:0;font-family:var(--ff-disp);font-size:clamp(2rem,10vw,2.7rem);line-height:1.6}
 .track{position:relative;z-index:1}
 .hint{position:fixed;bottom:20px;left:50%;translate:-50% 0;z-index:8;pointer-events:none;
@@ -267,7 +288,20 @@ body.locked{overflow:hidden}
 <section class="intro" id="intro">
   <div class="intro-in">
     <p class="eyebrow">دعوة</p>
-    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس <b>المهندس سمير الفتياني</b><br>ووالد العروس <b>محمد غريب</b><br>بدعوتكم لحضور حفل زفاف</p>
+    <p class="meta">بقلوبٍ عامرةٍ بالفرح</p>
+    <p class="meta honor">يتشرّف</p>
+    <div class="parents">
+      <div class="parent">
+        <span class="role">والد العريس</span>
+        <span class="pname">المهندس سمير الفتياني</span>
+      </div>
+      <span class="parents-sep" aria-hidden="true"></span>
+      <div class="parent">
+        <span class="role">والد العروس</span>
+        <span class="pname">محمد غريب</span>
+      </div>
+    </div>
+    <p class="meta">بدعوتكم لحضور حفل زفاف</p>
     <h1 class="bloom intro-names">حامد&#160;&#160;&#160;حنين</h1>
     <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
     <svg class="orn" viewBox="0 0 150 18" aria-hidden="true">
