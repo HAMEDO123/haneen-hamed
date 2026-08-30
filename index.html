@@ -95,6 +95,16 @@ body.locked{overflow:hidden}
            letter-spacing:.22em;color:var(--orange-hi);direction:ltr;
            text-shadow:0 2px 12px rgba(0,0,0,.8)}
 
+.intro{
+  position:relative;z-index:4;min-height:100svh;
+  display:flex;align-items:center;justify-content:center;padding:56px 26px;
+  background:linear-gradient(to bottom,
+    rgba(21,10,28,.9) 0%, rgba(21,10,28,.86) 55%, rgba(21,10,28,.72) 82%, rgba(21,10,28,.35) 100%);
+}
+.intro-in{
+  width:var(--col);display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;
+}
+.intro-names{margin:0;font-family:var(--ff-disp);font-size:clamp(2rem,10vw,2.7rem);line-height:1.6}
 .track{position:relative;z-index:1}
 .hint{position:fixed;bottom:20px;left:50%;translate:-50% 0;z-index:8;pointer-events:none;
       display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -203,6 +213,19 @@ body.locked{overflow:hidden}
 .foot-t{margin:0;font-size:.8rem;color:var(--cream-3);word-spacing:.2em}
 
 /* موسيقى */
+.autobtn{
+  position:fixed;inset-inline-start:14px;bottom:66px;z-index:8;
+  width:44px;height:44px;border-radius:50%;cursor:pointer;display:grid;place-items:center;
+  background:rgba(21,10,28,.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(224,200,238,.4);
+  transition:opacity .4s ease;padding:0;
+}
+.autobtn svg{width:14px;height:14px;fill:var(--orange-hi);display:block}
+.autobtn .ic-play{display:none}
+.autobtn.paused .ic-play{display:block}
+.autobtn.paused .ic-pause{display:none}
+.autobtn.gone{opacity:0;pointer-events:none}
+.autobtn .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .music{position:fixed;inset-inline-start:14px;bottom:14px;z-index:8;
   width:44px;height:44px;border-radius:50%;cursor:pointer;display:grid;place-items:center;
   background:rgba(21,10,28,.7);backdrop-filter:blur(8px);
@@ -244,8 +267,21 @@ body.locked{overflow:hidden}
   </div>
 </div>
 
+<section class="intro" id="intro">
+  <div class="intro-in">
+    <p class="eyebrow">دعوة</p>
+    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس <b>المهندس سمير الفتياني</b><br>ووالد العروس <b>محمد غريب</b><br>بدعوتكم لحضور حفل زفاف</p>
+    <h1 class="bloom intro-names">حنين &amp; حامد</h1>
+    <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
+    <svg class="orn" viewBox="0 0 150 18" aria-hidden="true">
+      <path d="M4 9 H58 M92 9 H146" stroke="rgba(224,200,238,.4)" stroke-width="1"/>
+      <path d="M75 2 Q82 9 75 16 Q68 9 75 2Z" fill="url(#og)"/>
+    </svg>
+  </div>
+</section>
+
 <div class="track" id="track"></div>
-<div class="hint" id="hint"><span>مرّر للأسفل</span><i></i></div>
+<div class="hint" id="hint"><span>اضغط ليبدأ العرض</span><i></i></div>
 
 <main class="sheet">
   <section class="sec rev">
@@ -269,13 +305,6 @@ body.locked{overflow:hidden}
       <div class="sc"><div class="sc-well"><span class="sc-val">٢٤</span></div><span class="sc-cap">اليوم</span></div>
     </div>
     <p class="meta">يوم <b>الخميس</b> — الساعة السابعة مساءً</p>
-  </section>
-
-  <section class="sec rev">
-    <p class="eyebrow">دعوة</p>
-    <p class="meta">بقلوبٍ عامرةٍ بالفرح<br>يتشرّف والد العريس <b>المهندس سمير الفتياني</b><br>ووالد العروس <b>محمد غريب</b><br>بدعوتكم لحضور حفل زفاف</p>
-    <h2 class="bloom" style="font-size:1.85rem;margin:0">حنين &amp; حامد</h2>
-    <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
   </section>
 
   <section class="sec rev">
@@ -344,6 +373,11 @@ body.locked{overflow:hidden}
   </footer>
 </main>
 
+<button class="autobtn" id="autoBtn" aria-pressed="true">
+  <svg class="ic-pause" viewBox="0 0 12 14" aria-hidden="true"><rect x="1" y="1" width="3.4" height="12" rx="1"/><rect x="7.6" y="1" width="3.4" height="12" rx="1"/></svg>
+  <svg class="ic-play" viewBox="0 0 12 14" aria-hidden="true"><path d="M2 1.5 11 7 2 12.5Z"/></svg>
+  <span class="sr">إيقاف التمرير التلقائي</span>
+</button>
 <audio id="bgm" loop preload="auto" playsinline>
   <source src="music.m4a" type="audio/mp4">
 </audio>
@@ -538,8 +572,8 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   }
 
   function readScroll(){
-    const len=track.offsetHeight-vh;
-    camPT = len>0 ? clamp(scrollY/len,0,1) : 1;
+    const top=track.offsetTop, len=track.offsetHeight-vh;
+    camPT = len>0 ? clamp((scrollY-top)/len,0,1) : 1;
     
   }
   addEventListener('scroll',readScroll,{passive:true});
@@ -594,8 +628,8 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     prog.style.width=(camP*100)+'%';
 
     /* التعليقات */
-    const inCamera = scrollY < (track.offsetHeight - vh*0.75);
-    hint.classList.toggle('off', camPT>0.015 || !inCamera);
+    const inCamera = scrollY > track.offsetTop-vh*0.5 && scrollY < (track.offsetTop+track.offsetHeight - vh*0.75);
+    hint.classList.toggle('off', scrollY>innerHeight*0.35);
     capsEls.forEach(el=>{
       const a=+el.dataset.in, b=+el.dataset.out;
       let o=0;
@@ -777,6 +811,60 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     }
   });
 
+  /* ================= تمرير تلقائي ================= */
+  const autoBtn=$('#autoBtn');
+  const auto={on:false,raf:0,last:0,stopped:false};
+  let idleT=null;
+
+  function parkY(){
+    const el=$('#rsvpSec');
+    if(!el) return Infinity;
+    return el.getBoundingClientRect().top+scrollY-innerHeight*0.24;
+  }
+  function setAutoBtn(on){
+    autoBtn.classList.toggle('paused',!on);
+    autoBtn.setAttribute('aria-pressed',String(on));
+    $('.sr',autoBtn).textContent=on?'إيقاف التمرير التلقائي':'متابعة التمرير التلقائي';
+  }
+  function autoStep(ts){
+    auto.raf=requestAnimationFrame(autoStep);
+    if(!auto.on||document.hidden){ auto.last=ts; return; }
+    const dt=auto.last?Math.min(60,ts-auto.last):16; auto.last=ts;
+    const camEnd=track.offsetTop+track.offsetHeight-vh;
+    const y=window.scrollY;
+    /* أبطأ في مرحلة القراءة، وأسرع قليلاً داخل مشهد القاعة */
+    const speed=y<camEnd?102:56;
+    const limit=Math.min(document.documentElement.scrollHeight-innerHeight, parkY());
+    const ny=Math.min(y+speed*dt/1000, limit);
+    if(ny<=y+0.05){ auto.on=false; auto.stopped=true; autoBtn.classList.add('gone'); return; }
+    window.scrollTo(0,ny);
+  }
+  function autoStart(){
+    if(auto.stopped) return;
+    auto.on=true; auto.last=0; setAutoBtn(true);
+    if(!auto.raf) auto.raf=requestAnimationFrame(autoStep);
+  }
+  function autoPause(){ auto.on=false; setAutoBtn(false); }
+
+  /* لمسة المستخدم توقف التمرير مؤقتاً وترجّعه بعد ٥ ثوانٍ */
+  function nudge(){
+    if(auto.stopped) return;
+    if(auto.on) autoPause();
+    clearTimeout(idleT);
+    idleT=setTimeout(autoStart,5000);
+  }
+  ['wheel','touchmove','keydown'].forEach(t=>addEventListener(t,nudge,{passive:true}));
+  /* عند الوصول لتأكيد الحضور نتوقف نهائياً */
+  ['#gName','#gCount'].forEach(sel=>{
+    const el=$(sel); if(el) el.addEventListener('focus',()=>{
+      auto.stopped=true; auto.on=false; clearTimeout(idleT); autoBtn.classList.add('gone');
+    });
+  });
+  autoBtn.addEventListener('click',()=>{
+    clearTimeout(idleT);
+    if(auto.on) autoPause(); else { auto.stopped=false; autoStart(); }
+  });
+
   /* ================= موسيقى الحفل (صوت فقط) ================= */
   /* "Arabic Islam Islamic Music" — alex-morgan · ترخيص Pixabay (حر الاستخدام) */
   const btn=$('#musicBtn'), bgm=$('#bgm');
@@ -808,7 +896,7 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     $('.sr',btn).textContent=on?'إيقاف الموسيقى':'تشغيل الموسيقى';
   }
   let armed=false;
-  function arm(){ if(armed) return; armed=true; if(startMusic()) setBtn(true); }
+  function arm(){ if(armed) return; armed=true; if(startMusic()) setBtn(true); setTimeout(autoStart,900); }
   ['pointerdown','touchstart','keydown','wheel'].forEach(t=>
     addEventListener(t,arm,{once:true,passive:true}));
 
