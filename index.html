@@ -342,14 +342,10 @@ body.locked{overflow:hidden}
 
   <section class="sec glass rev" id="rsvpSec">
     <p class="eyebrow">تأكيد الحضور</p>
-    <p class="note">يسعدنا نعرف إذا رح تشاركنا الفرح، حتى نحجزلك مقعدك.<br>الدعوة لشخصين كحدٍّ أقصى.</p>
+    <p class="note">يسعدنا نعرف إذا رح تشاركنا الفرح، حتى نحجزلك مقعدك.</p>
     <form class="form" id="rsvpForm">
       <div class="field"><label for="gName">الاسم</label>
         <input id="gName" type="text" maxlength="40" required placeholder="اكتب اسمك الكريم" autocomplete="name"></div>
-      <div class="field"><label for="gCount">عدد الأشخاص</label>
-        <select id="gCount">
-          <option value="1">١ شخص</option><option value="2">٢ شخصان</option>
-        </select></div>
       <div class="btn-row">
         <button class="btn btn-solid" type="submit" id="btnYes">رح أحضر بإذن الله</button>
         <button class="btn" type="submit" id="btnNo">أعتذر عن الحضور</button>
@@ -640,7 +636,7 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   function quiet(){ errEl.classList.add('hide'); }
   function busy(on){
     $('#btnYes').disabled=on; $('#btnNo').disabled=on;
-    $('#gName').disabled=on; $('#gCount').disabled=on;
+    $('#gName').disabled=on;
   }
 
   $('#againBtn').addEventListener('click',()=>{
@@ -658,7 +654,7 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     const name=$('#gName').value.trim();
     if(!name){ $('#gName').focus(); return; }
     const going=choice==='yes';
-    const entry={name:name.slice(0,60),count:going?Math.min(2,Number($('#gCount').value)||1):0,going};
+    const entry={name:name.slice(0,60),count:going?1:0,going};
 
     if(!CONFIG.rsvpUrl){ say('تسجيل الحضور لسا ما انفعّل.',true); return; }
 
@@ -736,10 +732,9 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   }
   ['wheel','touchmove','keydown'].forEach(t=>addEventListener(t,nudge,{passive:true}));
   /* عند الوصول لتأكيد الحضور نتوقف نهائياً */
-  ['#gName','#gCount'].forEach(sel=>{
-    const el=$(sel); if(el) el.addEventListener('focus',()=>{
-      auto.stopped=true; auto.on=false; clearTimeout(idleT); autoBtn.classList.add('gone');
-    });
+  const nameField=$('#gName');
+  if(nameField) nameField.addEventListener('focus',()=>{
+    auto.stopped=true; auto.on=false; clearTimeout(idleT); autoBtn.classList.add('gone');
   });
   autoBtn.addEventListener('click',()=>{
     clearTimeout(idleT);
