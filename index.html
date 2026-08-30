@@ -136,7 +136,25 @@ body.locked{overflow:hidden}
   width:1px;align-self:stretch;flex:0 0 1px;
   background:linear-gradient(rgba(224,200,238,0),rgba(224,200,238,.38),rgba(224,200,238,0));
 }
-.intro-names{margin:0;font-family:var(--ff-disp);font-size:clamp(2rem,10vw,2.7rem);line-height:1.6}
+.couple{
+  margin:0;display:flex;justify-content:center;align-items:flex-end;
+  gap:clamp(12px,4.5vw,26px);width:100%;
+}
+.one{display:flex;flex-direction:column;align-items:center;gap:0}
+.rings{
+  display:block;width:clamp(38px,12vw,52px);flex:0 0 auto;
+  margin-bottom:.5em;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.85)) drop-shadow(0 0 14px rgba(233,168,122,.35));
+}
+.rings svg{width:100%;height:auto;display:block}
+.pre{
+  font-family:var(--ff-prose);font-size:1rem;font-weight:700;color:var(--cream-2);line-height:1.5;
+  text-shadow:0 1px 7px rgba(0,0,0,.85),0 0 22px rgba(0,0,0,.55);
+}
+.nm{
+  font-family:var(--ff-disp);font-weight:400;
+  font-size:clamp(2rem,10vw,2.7rem);line-height:1.55;
+}
 .track{position:relative;z-index:1}
 .hint{position:fixed;bottom:20px;left:50%;translate:-50% 0;z-index:8;pointer-events:none;
       display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -302,7 +320,21 @@ body.locked{overflow:hidden}
       </div>
     </div>
     <p class="meta">بدعوتكم لحضور حفل زفاف</p>
-    <h1 class="bloom intro-names">حامد&#160;&#160;&#160;حنين</h1>
+    <h1 class="couple">
+      <span class="one"><span class="pre">المهندس</span><span class="bloom nm">حامد</span></span>
+      <span class="rings" aria-hidden="true">
+        <svg viewBox="0 0 48 30" fill="none">
+          <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#FBEBDA"/><stop offset=".38" stop-color="#E9A87A"/>
+            <stop offset=".72" stop-color="#A97BC7"/><stop offset="1" stop-color="#E0C8EE"/>
+          </linearGradient></defs>
+          <circle cx="18" cy="17" r="10.2" stroke="url(#rg)" stroke-width="1.9"/>
+          <circle cx="30" cy="17" r="10.2" stroke="url(#rg)" stroke-width="1.9"/>
+          <path d="M30 3.2 L32.7 5.9 L30 8.6 L27.3 5.9 Z" fill="url(#rg)"/>
+        </svg>
+      </span>
+      <span class="one"><span class="bloom nm">حنين</span></span>
+    </h1>
     <p class="meta">مساء <b>الخميس ٢٤/٩/٢٠٢٦</b><br>الساعة السابعة مساءً<br>حضوركم أجمل هديّة</p>
     <svg class="orn" viewBox="0 0 150 18" aria-hidden="true">
       <path d="M4 9 H58 M92 9 H146" stroke="rgba(224,200,238,.4)" stroke-width="1"/>
