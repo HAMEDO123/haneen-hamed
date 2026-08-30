@@ -18,8 +18,8 @@
   --orange-hi:#FAD9BC;
   --gold:#D9B97F;
   --cream:#F7EFE6;
-  --cream-2:rgba(247,239,230,.72);
-  --cream-3:rgba(247,239,230,.5);
+  --cream-2:rgba(251,246,239,.9);
+  --cream-3:rgba(251,246,239,.72);
   --ff-disp:'Aref Ruqaa','Amiri',serif;
   --ff-prose:'Amiri',serif;
   --ff-ui:'Tajawal',system-ui,'Segoe UI',sans-serif;
@@ -119,8 +119,8 @@ body.locked{overflow:hidden}
 .sheet{
   position:relative;z-index:4;width:var(--col);margin-inline:auto;padding:0 0 40px;
   background:linear-gradient(to bottom,
-    rgba(21,10,28,0) 0%, rgba(21,10,28,.62) 5%, rgba(21,10,28,.84) 14%,
-    rgba(21,10,28,.88) 82%, rgba(21,10,28,.96) 100%);
+    rgba(21,10,28,0) 0%, rgba(21,10,28,.72) 5%, rgba(21,10,28,.9) 14%,
+    rgba(21,10,28,.93) 82%, rgba(21,10,28,.97) 100%);
 }
 .sec{padding:52px 26px;display:flex;flex-direction:column;align-items:center;gap:19px;text-align:center}
 .glass{
@@ -132,10 +132,13 @@ body.locked{overflow:hidden}
 .rev{opacity:0;transform:translateY(22px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.8,.25,1)}
 .rev.in{opacity:1;transform:none}
 .orn{display:block;width:150px;height:18px;margin:0 auto}
-.eyebrow{margin:0;font-size:.72rem;letter-spacing:.22em;color:var(--orange);word-spacing:.1em}
-.prose{margin:0;font-family:var(--ff-prose);font-size:1.06rem;line-height:2.3;color:var(--cream);max-width:31ch}
-.meta{margin:0;font-family:var(--ff-prose);font-size:1rem;line-height:2.1;color:var(--cream-2)}
-.meta b{color:var(--cream);font-weight:700}
+.eyebrow{margin:0;font-size:.78rem;letter-spacing:.2em;color:var(--orange-hi);word-spacing:.1em;font-weight:500;
+  text-shadow:0 1px 6px rgba(0,0,0,.85)}
+.prose{margin:0;font-family:var(--ff-prose);font-size:1.14rem;line-height:2.3;color:#FFFBF5;max-width:31ch;
+  text-shadow:0 1px 7px rgba(0,0,0,.8),0 0 22px rgba(0,0,0,.5)}
+.meta{margin:0;font-family:var(--ff-prose);font-size:1.08rem;line-height:2.15;color:var(--cream-2);
+  text-shadow:0 1px 7px rgba(0,0,0,.8),0 0 22px rgba(0,0,0,.5)}
+.meta b{color:#FFFBF5;font-weight:700}
 
 /* الخدش */
 .scratch-row{display:flex;gap:11px;justify-content:center;width:100%}
@@ -147,7 +150,7 @@ body.locked{overflow:hidden}
 }
 .sc-val{font-family:var(--ff-prose);font-weight:700;color:var(--orange-hi);
   font-size:clamp(1.3rem,6vw,1.75rem);line-height:1.4;letter-spacing:.01em}
-.sc-cap{font-size:.72rem;color:var(--cream-3)}
+.sc-cap{font-size:.78rem;color:var(--cream-2);text-shadow:0 1px 6px rgba(0,0,0,.7)}
 .linkish{appearance:none;background:none;border:0;cursor:pointer;font-family:var(--ff-ui);
          font-size:.8rem;color:var(--orange);border-bottom:1px solid rgba(233,168,122,.45);padding:2px 0}
 
@@ -159,7 +162,7 @@ body.locked{overflow:hidden}
          box-shadow:inset 0 0 0 1px rgba(224,200,238,.35)}
 .cd-n{font-family:var(--ff-lat);font-weight:400;font-size:1.6rem;line-height:1;
       color:var(--orange-hi);font-variant-numeric:tabular-nums}
-.cd-l{font-size:.63rem;color:var(--cream-3)}
+.cd-l{font-size:.68rem;color:var(--cream-2)}
 .cd-done{margin:0;font-family:var(--ff-prose);font-size:1.15rem;color:var(--orange-hi)}
 
 /* البرنامج */
@@ -174,8 +177,8 @@ body.locked{overflow:hidden}
 .tl-dot::after{content:"";position:absolute;top:19px;bottom:-24px;width:1px;
                background:linear-gradient(rgba(169,123,199,.55),rgba(169,123,199,0))}
 .tl li:last-child .tl-dot::after{display:none}
-.tl-t{margin:0;font-size:1rem;font-weight:500;color:var(--cream)}
-.tl-d{margin:2px 0 0;font-size:.83rem;color:var(--cream-3);line-height:1.75}
+.tl-t{margin:0;font-size:1.05rem;font-weight:700;color:#FFFBF5;text-shadow:0 1px 6px rgba(0,0,0,.8)}
+.tl-d{margin:2px 0 0;font-size:.9rem;color:var(--cream-3);line-height:1.8;text-shadow:0 1px 6px rgba(0,0,0,.75)}
 
 /* أزرار */
 .btn-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
@@ -191,26 +194,9 @@ body.locked{overflow:hidden}
 .btn-solid:hover{background:linear-gradient(140deg,#FFE7CE,var(--orange-hi) 55%,var(--orange))}
 .btn[disabled]{opacity:.5;cursor:default}
 
-/* تأكيد الحضور */
-.form{width:100%;max-width:320px;display:flex;flex-direction:column;gap:20px}
-.field{display:flex;align-items:baseline;gap:10px;text-align:right}
-.field label{font-size:.86rem;color:var(--cream-2);white-space:nowrap;font-family:var(--ff-prose)}
-.field input,.field select{flex:1;min-width:0;font-family:var(--ff-prose);font-size:1.02rem;
-  color:var(--cream);background:transparent;border:0;
-  border-bottom:1px solid rgba(224,200,238,.45);padding:5px 2px}
-.field input::placeholder{color:var(--cream-3)}
-.field select option{background:#2A1338;color:var(--cream)}
-.field input:focus,.field select:focus{outline:none;border-bottom-color:var(--orange)}
-.note{margin:0;font-size:.84rem;color:var(--cream-2);line-height:1.95;max-width:32ch}
-.note.err{color:#F0A79A}
-.note.busy{color:var(--orange-hi)}
-.tally{margin:0;font-family:var(--ff-prose);font-size:1.05rem;color:var(--cream)}
-.tally b{font-family:var(--ff-lat);font-size:1.35rem;padding:0 5px;color:var(--orange-hi)}
-.thanks{display:flex;flex-direction:column;align-items:center;gap:12px;
-        font-family:var(--ff-prose);font-size:1.15rem;color:var(--cream);line-height:2}
 
 .foot{padding:34px 26px 52px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
-.foot-t{margin:0;font-size:.8rem;color:var(--cream-3);word-spacing:.2em}
+.foot-t{margin:0;font-size:.86rem;color:var(--cream-2);word-spacing:.2em;text-shadow:0 1px 6px rgba(0,0,0,.75)}
 
 /* موسيقى */
 .autobtn{
@@ -338,25 +324,6 @@ body.locked{overflow:hidden}
     <div class="btn-row"><a class="btn" id="mapBtn" href="https://share.google/mm1LsMKoN0qsQOAKk" target="_blank" rel="noopener">افتح الموقع على الخرائط</a></div>
   </section>
 
-  <section class="sec glass rev" id="rsvpSec">
-    <p class="eyebrow">تأكيد الحضور</p>
-    <p class="note">يسعدنا نعرف إذا رح تشاركنا الفرح، حتى نحجزلك مقعدك.</p>
-    <form class="form" id="rsvpForm">
-      <div class="field"><label for="gName">الاسم</label>
-        <input id="gName" type="text" maxlength="40" required placeholder="اكتب اسمك الكريم" autocomplete="name"></div>
-      <div class="btn-row">
-        <button class="btn btn-solid" type="submit" id="btnYes">رح أحضر بإذن الله</button>
-        <button class="btn" type="submit" id="btnNo">أعتذر عن الحضور</button>
-      </div>
-    </form>
-    <div class="thanks hide" id="thanks">
-      <span id="thanksMsg">شكراً لك</span>
-      <button class="linkish" id="againBtn">تسجيل ردٍّ آخر</button>
-    </div>
-    <p class="note hide" id="rsvpErr"></p>
-    <p class="tally hide" id="tally"></p>
-  </section>
-
   <footer class="foot">
     <svg class="orn" viewBox="0 0 150 18" aria-hidden="true">
       <path d="M4 9 H58 M92 9 H146" stroke="rgba(224,200,238,.4)" stroke-width="1"/>
@@ -392,9 +359,7 @@ const CONFIG = {
   endISO   : '2026-09-25T00:00:00+03:00',
   title    : 'حفل زفاف حنين وحامد',
   venue    : 'EXIT VENUE — Amman, Jordan',
-  mapsUrl  : 'https://share.google/mm1LsMKoN0qsQOAKk',
-  rsvpUrl  : 'https://script.google.com/macros/s/AKfycbzO21acTKgd-UJ3DoMKWTS6WBIDDpRuhiRMbY_ddC1wZrBgAeFsvsY7GVIpgYxFfLCFyg/exec'
-};
+  mapsUrl  : 'https://share.google/mm1LsMKoN0qsQOAKk'};
 
 /* أبعاد صورة القاعة */
 const IMG_W = 1152, IMG_H = 1440;
@@ -587,114 +552,13 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     +(CONFIG.venue?'&location='+encodeURIComponent(CONFIG.venue):'');
   if(CONFIG.mapsUrl){ $('#mapBtn').href=CONFIG.mapsUrl; }
 
-  /* ================= تأكيد الحضور ================= */
-  const tallyEl=$('#tally'), errEl=$('#rsvpErr');
-
-  function renderGuests(total){
-    if(!total){ tallyEl.classList.add('hide'); return; }
-    tallyEl.classList.remove('hide');
-    tallyEl.innerHTML='رح يشاركنا الفرح <b>'+total+'</b> ضيف حتى الآن';
-  }
-
-  /* القراءة عبر JSONP لتجاوز قيود CORS في Apps Script */
-  let jsonpN=0;
-  const wait=ms=>new Promise(r=>setTimeout(r,ms));
-  function fetchGuests(){
-    return new Promise(resolve=>{
-      if(!CONFIG.rsvpUrl) return resolve(null);
-      const cb='__rsvp'+(++jsonpN);
-      const sc=document.createElement('script');
-      const t=setTimeout(()=>{done(null);},12000);
-      function done(d){ clearTimeout(t); delete window[cb];
-        if(sc.parentNode) sc.parentNode.removeChild(sc); resolve(d); }
-      window[cb]=d=>done(d);
-      sc.onerror=()=>done(null);
-      sc.src=CONFIG.rsvpUrl+(CONFIG.rsvpUrl.indexOf('?')<0?'?':'&')+'callback='+cb+'&t='+Date.now();
-      document.body.appendChild(sc);
-    });
-  }
-  async function loadGuests(){
-    const d=await fetchGuests();
-    if(d&&d.ok) renderGuests(d.total);
-    return d;
-  }
-  loadGuests();
-
-  function closeForm(msg){
-    $('#rsvpForm').classList.add('hide');
-    $('#thanks').classList.remove('hide');
-    $('#thanksMsg').textContent=msg;
-  }
-  function say(text,isErr){
-    errEl.classList.remove('hide');
-    errEl.classList.toggle('err',!!isErr);
-    errEl.classList.toggle('busy',!isErr);
-    errEl.textContent=text;
-  }
-  function quiet(){ errEl.classList.add('hide'); }
-  function busy(on){
-    $('#btnYes').disabled=on; $('#btnNo').disabled=on;
-    $('#gName').disabled=on;
-  }
-
-  $('#againBtn').addEventListener('click',()=>{
-    $('#thanks').classList.add('hide');
-    $('#rsvpForm').classList.remove('hide');
-    quiet(); $('#gName').value=''; $('#gName').focus();
-  });
-
-  let choice='yes';
-  $('#btnYes').addEventListener('click',()=>{choice='yes';});
-  $('#btnNo').addEventListener('click',()=>{choice='no';});
-
-  $('#rsvpForm').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const name=$('#gName').value.trim();
-    if(!name){ $('#gName').focus(); return; }
-    const going=choice==='yes';
-    const entry={name:name.slice(0,60),count:going?1:0,going};
-
-    if(!CONFIG.rsvpUrl){ say('تسجيل الحضور لسا ما انفعّل.',true); return; }
-
-    busy(true); say('جاري التسجيل…',false);
-    try{
-      const post=fetch(CONFIG.rsvpUrl,{
-        method:'POST', mode:'no-cors', redirect:'follow',
-        headers:{'Content-Type':'text/plain;charset=utf-8'},
-        body:JSON.stringify(entry)
-      }).catch(()=>{});
-      await Promise.race([post,wait(9000)]);
-
-      /* تأكيد فعلي: نقرأ الجدول ونتأكد أن الاسم وصل */
-      let ok=!going;
-      for(let i=0;i<4&&!ok;i++){
-        await wait(i?1800:700);
-        const d=await loadGuests();
-        if(d&&d.ok&&d.guests) ok=d.guests.some(g=>String(g.name).trim()===entry.name);
-      }
-      busy(false);
-      if(ok){
-        quiet();
-        closeForm(going ? 'سجّلنا حضورك يا '+entry.name+' — بانتظارك 🤍'
-                        : 'وصلنا اعتذارك يا '+entry.name+' — رح نفتقدك');
-      } else {
-        say('ما وصل التسجيل. تأكد من الإنترنت وجرّب كمان مرة.',true);
-      }
-    }catch(err){
-      busy(false);
-      say('صار خطأ. جرّب كمان مرة.',true);
-    }
-  });
-
   /* ================= تمرير تلقائي ================= */
   const autoBtn=$('#autoBtn');
   const auto={on:false,raf:0,last:0,stopped:false};
   let idleT=null;
 
   function parkY(){
-    const el=$('#rsvpSec');
-    if(!el) return Infinity;
-    return el.getBoundingClientRect().top+scrollY-innerHeight*0.24;
+    return document.documentElement.scrollHeight-innerHeight;
   }
   function setAutoBtn(on){
     autoBtn.classList.toggle('paused',!on);
@@ -730,10 +594,6 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   }
   ['wheel','touchmove','keydown'].forEach(t=>addEventListener(t,nudge,{passive:true}));
   /* عند الوصول لتأكيد الحضور نتوقف نهائياً */
-  const nameField=$('#gName');
-  if(nameField) nameField.addEventListener('focus',()=>{
-    auto.stopped=true; auto.on=false; clearTimeout(idleT); autoBtn.classList.add('gone');
-  });
   autoBtn.addEventListener('click',()=>{
     clearTimeout(idleT);
     if(auto.on) autoPause(); else { auto.stopped=false; autoStart(); }
