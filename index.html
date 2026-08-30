@@ -388,71 +388,6 @@ body.locked{overflow:hidden}
 
 <script type="application/json" id="rsvp-data">[]</script>
 
-<style>
-/* ===== النقاط التفاعلية ===== */
-.spots{position:fixed;inset:0;z-index:5;pointer-events:none}
-.spot{
-  position:absolute;translate:-50% -50%;pointer-events:auto;
-  width:34px;height:34px;border:0;padding:0;cursor:pointer;border-radius:50%;
-  background:transparent;opacity:0;visibility:hidden;pointer-events:none;
-  transition:opacity .5s ease,transform .2s ease;
-}
-.spot.show{opacity:1;visibility:visible;pointer-events:auto}
-.spot:active{transform:translate(-50%,-50%) scale(.9)}
-.spot::before,.spot::after{content:"";position:absolute;border-radius:50%}
-.spot::before{
-  inset:11px;
-  background:radial-gradient(circle at 35% 32%,#FFFDF7 0%,#FAD9BC 50%,#E9A87A 100%);
-  box-shadow:0 0 0 2px rgba(21,10,28,.6), 0 0 16px 4px rgba(250,217,188,.8);
-}
-.spot::after{
-  inset:2px;border:1.5px solid rgba(250,217,188,.9);
-  animation:ping 2.4s cubic-bezier(.2,.7,.3,1) infinite;
-}
-@keyframes ping{0%{transform:scale(.5);opacity:1}75%{transform:scale(1.35);opacity:0}100%{opacity:0}}
-.spot .lbl{
-  position:absolute;top:50%;right:26px;translate:0 -50%;white-space:nowrap;
-  font-size:.72rem;font-weight:500;color:var(--cream);
-  padding:5px 11px;border-radius:999px;
-  background:rgba(21,10,28,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  box-shadow:inset 0 0 0 1px rgba(250,217,188,.3);
-}
-.spot.flip .lbl{right:auto;left:26px}
-
-/* بطاقة النقطة */
-.spotcard{
-  position:fixed;left:50%;bottom:0;translate:-50% 0;z-index:10;
-  width:min(430px,92vw);margin-bottom:18px;padding:24px 22px 20px;
-  border-radius:6px;text-align:center;
-  background:linear-gradient(170deg,rgba(42,19,56,.94),rgba(21,10,28,.96));
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  box-shadow:0 0 0 1px rgba(224,200,238,.28),0 30px 70px -20px rgba(0,0,0,.9);
-  display:flex;flex-direction:column;align-items:center;gap:11px;
-  opacity:0;transform:translateY(26px);pointer-events:none;
-  transition:opacity .45s ease,transform .5s cubic-bezier(.2,.8,.25,1);
-}
-.spotcard.on{opacity:1;transform:none;pointer-events:auto}
-.spotcard h3{margin:0;font-family:var(--ff-disp);font-size:1.35rem;line-height:1.7;
-  background:linear-gradient(140deg,var(--orange-hi),var(--mauve-hi));
-  -webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.1em}
-.spotcard p{margin:0;font-family:var(--ff-prose);font-size:1rem;line-height:2;color:var(--cream-2);max-width:30ch}
-.spotcard .close{
-  appearance:none;background:none;border:0;cursor:pointer;margin-top:4px;
-  font-family:var(--ff-ui);font-size:.8rem;color:var(--orange);
-  border-bottom:1px solid rgba(233,168,122,.45);padding:3px 0;
-}
-.explore-veil{position:fixed;inset:0;z-index:4;background:rgba(21,10,28,.35);
-  opacity:0;pointer-events:none;transition:opacity .45s ease}
-.explore-veil.on{opacity:1;pointer-events:auto}
-</style>
-
-<div class="spots" id="spots"></div>
-<div class="explore-veil" id="veil"></div>
-<div class="spotcard" id="spotcard" role="dialog" aria-live="polite">
-  <h3 id="scTitle"></h3>
-  <p id="scBody"></p>
-  <button class="close" id="scClose">رجوع للقاعة</button>
-</div>
 
 <script>
 /* =====================================================================
@@ -483,21 +418,6 @@ const LIGHTS = [
   {x:.680,y:.700,r:11,s:.55},{x:.845,y:.690,r:10,s:.5}
 ];
 
-/* النقاط التفاعلية */
-const SPOTS = [
-  { x:.63, y:.53, cam:{fx:.63,fy:.53,s:2.05}, label:'الدرج',
-    title:'الزفّة على الدرج',
-    body:'من هون بينزل العروسين الساعة السابعة والنصف — الدرج كله مزيّن بورد موف وبرتقالي وإضاءة تحت كل درجة.' },
-  { x:.27, y:.30, cam:{fx:.27,fy:.30,s:1.95}, label:'الثريّات',
-    title:'سقف من الزهر',
-    body:'تعليقة ورد معلّقة بالكامل فوق الطاولات، مع ثريّات كريستال وسلاسل متدلّية.' },
-  { x:.30, y:.72, cam:{fx:.30,fy:.72,s:1.85}, label:'الطاولات',
-    title:'طاولة العشاء',
-    body:'طاولات دائرية وكراسي مخمل، شموع وورد على كل طاولة. العشاء الساعة التاسعة والنصف.' },
-  { x:.86, y:.66, cam:{fx:.84,fy:.66,s:1.9}, label:'الاستقبال',
-    title:'ركن الاستقبال',
-    body:'الشموع الطويلة والضيافة بتبلّش من السابعة — تعالوا بكّير وخدوا صور.' }
-];
 
 /* مفاتيح الكاميرا على طول التمرير */
 const CAM_KEYS = [
@@ -521,7 +441,7 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   const ease=(t)=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
 
   const shot=$('#shot'), track=$('#track'), prog=$('#prog'), hint=$('#hint'), scrim=$('#scrim');
-  const capsEls=$$('.cap'), spotsWrap=$('#spots'), veil=$('#veil'), card=$('#spotcard');
+  const capsEls=$$('.cap');
 
   /* ---------- كانفاس الوميض داخل الصورة ---------- */
   const glow=document.createElement('canvas');
@@ -549,7 +469,6 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   let camP=0, camPT=0;                       /* تقدّم التمرير: حالي/هدف */
   let cam={fx:.63,fy:.56,s:2.30,blur:4.5,bright:.62,sat:.95};
   let goal={...cam};
-  let mode='scroll';                          /* scroll | spot */
 
   function keyAt(p){
     let i=0; while(i<CAM_KEYS.length-2 && p>CAM_KEYS[i+1].p) i++;
@@ -579,31 +498,6 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   addEventListener('scroll',readScroll,{passive:true});
   readScroll(); camP=camPT;
 
-  /* ---------- النقاط ---------- */
-  const spotNodes=SPOTS.map((sp,i)=>{
-    const b=document.createElement('button');
-    b.className='spot'; b.type='button';
-    b.setAttribute('aria-label',sp.title);
-    b.innerHTML='<span class="lbl">'+sp.label+'</span>';
-    b.addEventListener('click',()=>openSpot(i));
-    spotsWrap.appendChild(b);
-    return b;
-  });
-  function openSpot(i){
-    const sp=SPOTS[i];
-    mode='spot'; goal={...sp.cam, blur:0, bright:1.04, sat:1.1};
-    $('#scTitle').textContent=sp.title;
-    $('#scBody').textContent=sp.body;
-    card.classList.add('on'); veil.classList.add('on');
-    spotNodes.forEach(n=>n.classList.remove('show'));
-  }
-  function closeSpot(){
-    mode='scroll';
-    card.classList.remove('on'); veil.classList.remove('on');
-  }
-  $('#scClose').addEventListener('click',closeSpot);
-  veil.addEventListener('click',closeSpot);
-  addEventListener('keydown',e=>{ if(e.key==='Escape') closeSpot(); });
 
   /* ---------- الرسم ---------- */
   let tms=0, prev=0;
@@ -612,11 +506,9 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
   function frame(ts){
     tms=ts||0;
     const dt = prev ? (tms-prev) : 16.67; prev=tms;
-    if(mode==='scroll'){
-      camP = reduced ? camPT : lerp(camP,camPT,smooth(0.10,dt));
-      goal = keyAt(camP);
-    }
-    const k = reduced ? 1 : smooth(mode==='spot'?0.075:0.16, dt);
+    camP = reduced ? camPT : lerp(camP,camPT,smooth(0.10,dt));
+    goal = keyAt(camP);
+    const k = reduced ? 1 : smooth(0.16, dt);
     cam.fx=lerp(cam.fx,goal.fx,k); cam.fy=lerp(cam.fy,goal.fy,k);
     cam.s =lerp(cam.s ,goal.s ,k); cam.blur=lerp(cam.blur,goal.blur,k);
     cam.bright=lerp(cam.bright,goal.bright,k); cam.sat=lerp(cam.sat,goal.sat,k);
@@ -633,7 +525,7 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
     capsEls.forEach(el=>{
       const a=+el.dataset.in, b=+el.dataset.out;
       let o=0;
-      if(inCamera && mode==='scroll' && camP>a-0.06 && camP<b+0.06){
+      if(inCamera && camP>a-0.06 && camP<b+0.06){
         const t=clamp((camP-a)/(b-a),0,1);
         o=clamp(Math.sin(Math.PI*t)*1.6,0,1);
       }
@@ -641,17 +533,6 @@ const CAM_SCREENS = 5.4;   /* طول مسار الكاميرا بالشاشات 
       el.style.transform='translateY('+((1-o)*16).toFixed(1)+'px)';
     });
 
-    /* النقاط التفاعلية */
-    const spotsOn = mode==='scroll' && camP>0.40 && inCamera;
-    SPOTS.forEach((sp,i)=>{
-      const n=spotNodes[i];
-      if(!spotsOn){ n.classList.remove('show'); return; }
-      const [sx,sy]=screenPos(sp.x,sp.y,cam);
-      if(sx<26||sx>vw-26||sy<70||sy>vh-120){ n.classList.remove('show'); return; }
-      n.style.left=sx.toFixed(1)+'px'; n.style.top=sy.toFixed(1)+'px';
-      n.classList.toggle('flip', sx > vw*0.55);
-      n.classList.add('show');
-    });
 
     /* الوميض الملزوق بالصورة */
     if(!reduced) drawGlow();
