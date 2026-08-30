@@ -475,7 +475,7 @@ const CAM_KEYS = [
   { p:0.76, fx:.34, fy:.70, s:1.50, blur:0.0, bright:1.04, sat:1.08 },
   { p:1.00, fx:.50, fy:.50, s:1.18, blur:7.0, bright:.70, sat:1.02 }
 ];
-const CAM_SCREENS = 3.6;   /* طول مسار الكاميرا بالشاشات */
+const CAM_SCREENS = 3.2;   /* طول مسار الكاميرا بالشاشات */
 
 (function(){
   'use strict';
@@ -669,9 +669,9 @@ const CAM_SCREENS = 3.6;   /* طول مسار الكاميرا بالشاشات 
     if(y<camEnd){
       const cp=clamp((y-camTop)/camLen,0,1);
       const ramp=clamp((cp-0.84)/0.12,0,1);
-      speed=lerp(104,260,ramp);
+      speed=lerp(148,340,ramp);
     } else {
-      speed=64;
+      speed=92;
     }
     const limit=Math.min(document.documentElement.scrollHeight-innerHeight, parkY());
     const ny=Math.min(y+speed*dt/1000, limit);
