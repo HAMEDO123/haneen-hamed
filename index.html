@@ -719,13 +719,16 @@ const CAM_SCREENS = 3.2;   /* طول مسار الكاميرا بالشاشات 
       if(i>=steps){ clearInterval(fadeTimer); fadeTimer=null; if(done) done(); }
     },50);
   }
+  /* يعيد وعداً يعكس نجاح التشغيل فعلياً */
   function startMusic(){
-    if(!bgm) return false;
-    bgm.volume=0;
+    if(!bgm) return Promise.reject(new Error('no-audio'));
+    try{ bgm.volume=0; }catch(e){}
     const pr=bgm.play();
-    if(pr&&pr.catch) pr.catch(()=>{});
-    fadeTo(VOL,2400);
-    return true;
+    if(pr&&pr.then){
+      return pr.then(()=>{ fadeTo(VOL,2400); setBtn(true); return true; });
+    }
+    fadeTo(VOL,2400); setBtn(true);
+    return Promise.resolve(true);
   }
   function stopMusic(){ fadeTo(0,700,()=>bgm.pause()); }
   /* خِتام العرض: تلاشٍ هادئ للأغنية */
@@ -739,27 +742,41 @@ const CAM_SCREENS = 3.2;   /* طول مسار الكاميرا بالشاشات 
     btn.setAttribute('aria-pressed',String(on));
     $('.sr',btn).textContent=on?'إيقاف الموسيقى':'تشغيل الموسيقى';
   }
-  let armed=false;
-  function arm(delay){
-    if(armed) return; armed=true;
-    if(startMusic()) setBtn(true);
-    const sb=document.getElementById('startBtn'); if(sb) sb.classList.add('gone');
-    const d=(typeof delay==='number')?delay:900;
-    setTimeout(autoStart,d);
+
+  const startBtn=$('#startBtn');
+  const showStart=on=>{ if(startBtn) startBtn.classList.toggle('gone',!on); };
+
+  let armed=false, armBound=false, scrolled=false;
+  function bindGesture(){
+    if(armBound) return; armBound=true;
+    ['pointerdown','touchstart','keydown','wheel'].forEach(t=>
+      addEventListener(t,onGesture,{once:true,passive:true}));
   }
-  ['pointerdown','touchstart','keydown','wheel'].forEach(t=>
-    addEventListener(t,arm,{once:true,passive:true}));
+  function onGesture(){ armBound=false; arm(); }
+
+  function arm(delay){
+    if(armed) return;
+    armed=true;
+    /* العرض يبدأ مهما كان مصير الصوت */
+    if(!scrolled){ scrolled=true; setTimeout(autoStart,(typeof delay==='number')?delay:900); }
+    startMusic()
+      .then(()=>{ showStart(false); })
+      .catch(()=>{
+        /* المتصفح رفض التشغيل — نُبقي الزر ونتيح محاولة جديدة */
+        armed=false; setBtn(false); showStart(true); bindGesture();
+      });
+  }
+  bindGesture();
 
   /* محاولة تشغيل فورية — تنجح فقط إذا سمح المتصفح */
   (function tryDirect(){
     if(!bgm) return;
-    bgm.volume=0;
+    try{ bgm.volume=0; }catch(e){}
     const pr=bgm.play();
-    if(pr&&pr.then) pr.then(()=>{ arm(4500); }).catch(()=>{});
+    if(pr&&pr.then) pr.then(()=>{ bgm.pause(); arm(4500); }).catch(()=>{});
   })();
 
   /* زر «افتح الدعوة» — يشغّل كل شيء بلمسة واحدة */
-  const startBtn=$('#startBtn');
   if(startBtn) startBtn.addEventListener('click',()=>{ arm(700); });
 
   btn.addEventListener('click',()=>{
